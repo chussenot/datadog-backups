@@ -52,7 +52,6 @@ opts.each do |opt, arg|
 end
 @teams.keys.each do |team|
   logger.info("=> Backing up Datadog team : \'#{team}\'")
-  binding.pry
   datadog = Management.new(team, datadogconfig['teams'][team]['apikey'],
                            datadogconfig['teams'][team]['appkey'])
   backupdir = './backups'
