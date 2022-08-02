@@ -10,10 +10,6 @@ require 'logger'
 require 'yaml'
 require_relative 'lib/management'
 
-Gaston.configure do |gaston|
-  gaston.files = Dir['./*.yaml']
-end
-
 datadogconfig = YAML.load_file('datadog-config.yaml')
 logger = Logger.new(STDOUT)
 
@@ -61,7 +57,7 @@ end
   datadog = Management.new(team, datadogconfig['teams'][team]['apikey'],
                            datadogconfig['teams'][team]['appkey'])
   backupdir = './backups'
-  backupdate = '%F'
+  backupdate = Time.now.strftime(datadogconfig['config']['dateformat'])
   datadog.backup_screenboards(backupdir, backupdate)
   datadog.backup_dashboards(backupdir, backupdate)
   datadog.backup_monitors(backupdir, backupdate)
