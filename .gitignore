@@ -1,0 +1,4 @@
+datadog-config.yaml
+.envrc
+backups/*
+!.keep
