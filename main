@@ -36,14 +36,12 @@ opts.each do |opt, arg|
 
   when '--team'
     if arg == 'all'
-
       # rubocop:todo Style/IdenticalConditionalBranches
       @teams = {}
       # rubocop:enable Style/IdenticalConditionalBranches
       @teams = datadogconfig['teams']
 
     else
-
       # rubocop:todo Style/IdenticalConditionalBranches
       @teams = {}
       # rubocop:enable Style/IdenticalConditionalBranches
@@ -54,6 +52,7 @@ opts.each do |opt, arg|
 end
 @teams.keys.each do |team|
   logger.info("=> Backing up Datadog team : \'#{team}\'")
+  binding.pry
   datadog = Management.new(team, datadogconfig['teams'][team]['apikey'],
                            datadogconfig['teams'][team]['appkey'])
   backupdir = './backups'

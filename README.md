@@ -17,3 +17,10 @@ Usage
     - [Datadog Ruby SDK](https://github.com/DataDog/dogapi-rb)
     - [Datadog API](https://docs.datadoghq.com/api/)
 
+Debug
+---------------------------
+
+```
+# Add some breakpoint on the ruby line you want with pry `binding.pry`
+# Build your Docker image `docker build . -t ddb  && docker run -it ddb`
+```

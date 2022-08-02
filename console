@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+ENV['DATADOG_HOST'] = 'https://api.datadoghq.eu'
+
+require 'dogapi'
+require 'json'
+require 'fileutils'
+require 'logger'
+require 'pry'
+require 'yaml'
+require 'active_support/core_ext/hash'
+
+datadogconfig = YAML.load_file('datadog-config.yaml')
+logger = Logger.new(STDOUT)
+
+@dog = Dogapi::Client.new(datadogconfig['teams']['manomano']['apikey'],
+    datadogconfig['teams'][ENV['TEAM']]['appkey'])
+
+code, monitors = @dog.get_all_monitors
+if code == '200'
+    monitors.map!(&:symbolize_keys)
+end
+
+matrix = monitors.map{|m| [m[:id], m[:name], m[:query], m]}
+
+matrix.each do |id, name, query, monitor|
+    if name.include? '[PRD]'
+        puts "Do you want to rename this monitor? [y||n] :: #{name}"
+        puts "https://app.datadoghq.eu/monitors##{id}/edit"
+        resp = gets
+        if resp.strip == 'y'
+          name.gsub! '[PRD]', '[SRE]'
+          @dog.update_monitor(id, query, name: name)
+        end
+    end
+end

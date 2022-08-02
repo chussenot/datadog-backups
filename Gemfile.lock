@@ -7,13 +7,18 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2)
+    coderay (1.1.3)
     concurrent-ruby (1.1.6)
     dogapi (1.40.0)
       multi_json
     i18n (1.8.2)
       concurrent-ruby (~> 1.0)
+    method_source (1.0.0)
     minitest (5.14.0)
     multi_json (1.14.1)
+    pry (0.14.1)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
     thread_safe (0.3.6)
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
@@ -25,6 +30,7 @@ PLATFORMS
 DEPENDENCIES
   activesupport
   dogapi
+  pry
 
 BUNDLED WITH
    2.1.4
