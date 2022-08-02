@@ -1,0 +1,8 @@
+---
+config:
+  backupdir: "./backups"
+  dateformat: "%F"
+teams:
+  acme:
+    apikey: ""
+    appkey: ""

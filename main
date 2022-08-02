@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+
+require 'date'
+require 'rubygems'
+require 'dogapi'
+require 'json'
+require 'fileutils'
+require 'getoptlong'
+require 'logger'
+require 'yaml'
+require_relative 'lib/management'
+
+Gaston.configure do |gaston|
+  gaston.files = Dir['./*.yaml']
+end
+
+datadogconfig = YAML.load_file('datadog-config.yaml')
+logger = Logger.new(STDOUT)
+
+opts = GetoptLong.new(
+  ['--help', '-h', GetoptLong::NO_ARGUMENT],
+  ['--team', '-t', GetoptLong::REQUIRED_ARGUMENT]
+)
+
+def print_usage
+  puts 'Datadog Backup CLI - Dump Datadog dashboards, screenboards and monitors to JSON backups'
+  puts "Usage: #{$0} --help        - Display the help message"
+  puts "Usage: #{$0} --team all    - Backup all teams dashboards, screenboards and monitors"
+  puts "Usage: #{$0} --team <name> - Backup only team <name> dashboards, screenboards and monitors"
+  exit 1
+end
+
+print_usage if ARGV.count < 2
+
+opts.each do |opt, arg|
+  case opt
+  when '--help'
+
+    print_usage
+
+  when '--team'
+    if arg == 'all'
+
+      # rubocop:todo Style/IdenticalConditionalBranches
+      @teams = {}
+      # rubocop:enable Style/IdenticalConditionalBranches
+      @teams = datadogconfig['teams']
+
+    else
+
+      # rubocop:todo Style/IdenticalConditionalBranches
+      @teams = {}
+      # rubocop:enable Style/IdenticalConditionalBranches
+      @teams[arg] = datadogconfig['teams'][arg]
+
+    end
+  end
+end
+@teams.keys.each do |team|
+  logger.info("=> Backing up Datadog team : \'#{team}\'")
+  datadog = Management.new(team, datadogconfig['teams'][team]['apikey'],
+                           datadogconfig['teams'][team]['appkey'])
+  backupdir = './backups'
+  backupdate = '%F'
+  datadog.backup_screenboards(backupdir, backupdate)
+  datadog.backup_dashboards(backupdir, backupdate)
+  datadog.backup_monitors(backupdir, backupdate)
+end
